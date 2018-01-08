@@ -15,6 +15,11 @@ public class TYPE_OF_LIBRARY_CARD {
 	public TYPE_OF_LIBRARY_CARD() {
 		
 	}
+		public TYPE_OF_LIBRARY_CARD(String tNAME, Integer tMAX, Integer tLONG) {
+		TNAME = tNAME;
+		TMAX = tMAX;
+		TLONG = tLONG;
+	}
 		@Id
 		@GeneratedValue
 		private Integer TNO;//借书证类型ID

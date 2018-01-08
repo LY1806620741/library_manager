@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <script type="text/javascript" src="../Js/jquery.js"></script>
+    <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="../Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../Js/ckform.js"></script>
+    <script type="text/javascript" src="../Js/common.js"></script> 
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<form id="" action="../action/librarycard/add" method="post" class="definewidth m20">
+<input type="hidden" id="tid" name="tNO" value="" />
+<table class="table table-bordered table-hover ">
+    <tr>
+        <td width="10%" class="tableleft">借书卡类型名字</td>
+        <td><input id="tname" type="text" name="tNAME" value=""/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">最大借阅数(本)</td>
+        <td ><input id="tmax" type="text" name="tMAX" value=""/></td>
+    </tr>  
+    <tr>
+        <td class="tableleft">最长借阅时间(天)</td>
+        <td >
+           <input id="tlong" type="text" name="tLONG" value=""/>
+        </td>
+    </tr>
+    <tr>
+        <td class="tableleft"></td>
+        <td>
+            <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+        </td>
+    </tr>
+</table>
+</form>
+</body>
+</html>
+<script>
+	id=gerUrlParam("id");
+    $(function () {       
+		$('#backid').click(function(){
+				window.location.href="index.html";
+		 });
+
+    });
+    $.getJSON("../action/librarycard/findone/"+id,function(result){
+    	$("#tid").val(result.tno);
+		$("#tname").val(result.tname);
+		$("#tmax").val(result.tmax);
+		$("#tlong").val(result.tlong);
+    });
+    function gerUrlParam(name){
+		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r!=null) return unescape(r[2]);return null;
+	}
+</script>

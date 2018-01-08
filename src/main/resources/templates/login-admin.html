@@ -5,7 +5,7 @@
     <title>管理员登陆</title>
     <style>
         #win10-login {
-            background: url('./admin/img/wallpapers/login.jpg') no-repeat fixed;
+            background: url('./img/wallpapers/login.jpg') no-repeat fixed;
             width: 100%;
             height: 100%;
             background-size: 100% 100%;
@@ -105,21 +105,63 @@
 <body>
 <div id="win10-login-box">
         <div class="win10-login-box-square">
-            <img src="./admin/img/avatar.jpg" class="content"/>
+            <img src="./img/avatar.jpg" class="content"/>
         </div>
-        <p style="font-size: 24px;color: white;text-align: center">管理员登陆</p>
-        <form target="_self" method="post" action="#">
+        <p style="font-size: 24px;color: white;text-align: center" id="tips">管理员登陆</p>
             <!--用户名-->
-            <input type="mname" placeholder="请输入登录名" class="login-username"/>
+            <input id="mname" stype="mname" placeholder="请输入登录名" class="login-username"/>
             <!--密码-->
-            <input type="mpower" placeholder="请输入密码" class="login-password"/>
+            <input id="mpsw" type="mpsw" placeholder="请输入密码" class="login-password"/>
             <!--登陆按钮-->
-            <input type="submit"  value="登录" id="btn-login" class="login-submit"/>
-        </form>
+            <input type="submit" value="登录" id="btn-login" class="login-submit"/>
     </div>
 <div id="win10-login">
     <div style="height: 10%;min-height: 120px"></div>
     
 </div>
+<script src="/js/jquery-2.2.3.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    	$('#mname').bind('keydown',function(event){ 
+    		if (event.keyCode==13) {
+                $('#mpsw').focus();
+            }
+    	});
+    	$('#mpsw').bind('keydown',function(event){ 
+    		if (event.keyCode==13) {
+    			login();
+            }
+    	});
+    
+	$('#btn-login').click(function(){
+		login();
+	});
+
+function login() {
+	if($('#mname').val()==""||$('#mpsw').val()==""){
+		$('#tips').html("用户名密码不能为空");
+		}else{
+			$.ajax({
+				url:"/admin",
+				type:"POST",
+				dataType:"json", 
+				data:{
+					mname:$('#mname').val(),
+					mpsw:$('#mpsw').val(),
+				},
+				success:function(respon){
+					if(respon.errno==0)
+					{
+						$('#tips').html("登陆成功");
+						window.location.replace("./");
+					}else{
+						$('#tips').html(respon.msg);
+					}
+					
+				}
+			});
+		}
+}
+</script>
 </body>
 </html>

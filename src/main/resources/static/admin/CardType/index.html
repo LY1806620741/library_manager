@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <script type="text/javascript" src="../Js/jquery.js"></script>
+    <!-- <script type="text/javascript" src="../Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../Js/ckform.js"></script>
+    <script type="text/javascript" src="../Js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="index.html" method="get">  
+    借书证类型：
+    <input type="text" name="rolename" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
+    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增类型</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>借书卡类型名字</th>
+        <th>最大借阅数(本)</th>
+        <th>最长借阅时间(天)</th>
+        <th style="width:150px;">操作</th>
+    </tr>
+    </thead><tbody id="list">
+	     <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                  <a href="edit.html"></a>
+                  
+            </td>
+            <td></td>
+        </tr></tbody></table>
+<div class="inline pull-right page" id="pageinfo">
+        </div>
+</body>
+</html>
+<script>
+
+	var page=gerUrlParam("page");
+	var size=gerUrlParam("size");
+	if (page==null||page<1){
+		page=1;
+	}
+	if (size==null||size<1){
+		size=10;
+	}
+	page--;//从0开始
+	lookpage(page,size);
+	
+    $(function () {
+        
+		$('#addnew').click(function(){
+
+				window.location.href="add.html";
+		 });
+
+
+    });
+
+	function del(id)
+	{
+		if(confirm("确定要删除吗？"))
+		{
+			var url = "index.html";
+			$.get("../action/cardtype/del/"+id,function(result){
+				window.location.href=url;
+			});
+		}
+	}
+	
+	function lookpage(page,size){
+		$.getJSON("../action/cardtype/findpage/"+page+"/"+size,function(result){
+			$('#list').html("");
+			if(page>result.totalPages){
+				window.location.href='?page='+1+'&size='+size;
+			}
+			/*if(size>result.totalElements){
+				window.location.href='?page='+1+'&size='+result.totalElements;
+			}*/
+			for (var i=0;i<result.content.length;i++){
+				$('#list').html($('#list').html()+"<tr><td>"+result.content[i].tno+"</td><td>"+result.content[i].tname+"</td><td>"+result.content[i].tmax+"</td><td>"+result.content[i].tlong+"</td><td><a href='./edit.html?id="+result.content[i].tno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+result.content[i].tno+");' type='submit'>删除</button></td>");
+			}
+			$('#pageinfo').html("本页"+result.numberOfElements+"条记录"+(page+1)+"/"+result.totalPages+"页总共"+result.totalElements+"条记录<a class='btn "+(result.first?"disabled'":"'")+(result.first?"":" href='?page="+page+"&size="+size+"'")+">上一页</a><a class='btn "+(result.last?"disabled'":"'")+(result.last?"":" href='?page="+(page+2)+"&size="+size+"'")+">下一页</a>");
+			pagelist(page,result.totalPages);
+			$('#pageinfo').html($('#pageinfo').html()+"<a "+(result.last?"":"href='?page="+result.totalPages+"&size="+size+"'")+" class='btn "+(result.last?"disabled":"")+"'>最后一页</a>");
+		});
+		
+	}
+	
+	function pagelist(page,totalPages){//page0开始
+		if (totalPages<5){
+			for (i=0;i<totalPages;i++){
+				if (i==page){
+					$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+				}else{
+					$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+				}
+			}
+		}else{
+			if (page<5){//最前5页
+				for (i=0;i<5;i++){
+					if (i==page){
+						$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+					}else{
+						$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+					}
+				}
+			}else if (page>totalPages-4){//最后5页
+				for (i=totalPages-5;i<totalPages;i++){
+					if (i==page){
+						$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+					}else{
+						$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+					}
+				}
+			}else{
+				for (i=page-2;i<page+3;i++){
+					if (i==page){
+						$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+					}else{
+						$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+					}
+				}
+				
+			}
+		}
+	
+	}
+	
+	function gerUrlParam(name){
+		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r!=null) return unescape(r[2]);return null;
+	}
+	
+</script>

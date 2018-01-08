@@ -62,7 +62,16 @@ public class Manage {
 	private String mpsw;//管理员密码
 	private String mrealname;//管理员真名
 	private Integer mpower;//权限
-	private Date createtime;//添加管理员的时间
+	private Date createtime=new Date();//添加管理员的时间
 	private Date logintime;//登陆的时间
-
+	public Manage(String mname, String mpsw, String mrealname, Integer mpower) {
+		this.mname = mname;
+		this.mpsw = mpsw;
+		this.mrealname = mrealname;
+		this.mpower = mpower;
+	}
+	public Manage() {
+		
+	}
+	
 }

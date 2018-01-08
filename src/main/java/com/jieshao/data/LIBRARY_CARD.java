@@ -16,11 +16,11 @@ public class LIBRARY_CARD {
 	}
 	@Id
 	@GeneratedValue
-	private String CNO;//借书证ID（自增）
-	public String getCNO() {
+	private Integer CNO;//借书证ID（自增）
+	public Integer getCNO() {
 		return CNO;
 	}
-	public void setCNO(String cNO) {
+	public void setCNO(Integer cNO) {
 		CNO = cNO;
 	}
 	public String getCNAME() {
@@ -53,7 +53,23 @@ public class LIBRARY_CARD {
 	public void setCPSW(String cPSW) {
 		CPSW = cPSW;
 	}
+	private String CAN;//账号account num
+	public String getCAN() {
+		return CAN;
+	}
+	public void setCAN(String cAN) {
+		CAN = cAN;
+	}
 	private String CNAME;//借书证拥有者名字
+	public LIBRARY_CARD(String cAN, String cNAME, String cSEX, Integer tNO, Integer cSTATUS, String cPSW) {
+		super();
+		CAN = cAN;
+		CNAME = cNAME;
+		CSEX = cSEX;
+		TNO = tNO;
+		CSTATUS = cSTATUS;
+		CPSW = cPSW;
+	}
 	private String CSEX;//借书证者的性别
 	private Integer TNO;//借书证的类型，外键
 	private Integer CSTATUS;//借书证状态，0禁用，1开启
