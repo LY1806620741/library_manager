@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jieshao.Repository.LibraryCardRepository;
-import com.jieshao.Repository.vm_CardAndTypeRepository;
 import com.jieshao.data.LIBRARY_CARD;
 import com.jieshao.data.TYPE_OF_LIBRARY_CARD;
-import com.jieshao.dataview.vm_CardAndType;
+import com.jieshao.dataview.vwCardAndType;
 import com.jieshao.json.Result;
 
 import java.io.IOException;
@@ -35,14 +34,20 @@ public class LibraryCardController {
 	private LibraryCardRepository librarycardRepository;
 	
 	/**
-	 * 用户登陆
+	 * 用户登陆界面（调用模板）
+	 * 权限：所有人
 	 * @return
 	 */
 	@GetMapping(value="/login")
 	public String CardloginView() {
 		return "login";
 	}
-	
+	/**
+	 * 废弃
+	 * @param id
+	 * @param Cname
+	 * @return
+	 */
 	@PostMapping(value="/login")
 	public String Cardlogin(@RequestParam("username") Integer id,
 			@RequestParam("password") String Cname) {
@@ -52,6 +57,7 @@ public class LibraryCardController {
 	
 	/**
 	 * 查找全部
+	 * 权限：管理员
 	 * @param session
 	 * @return
 	 */
@@ -64,19 +70,28 @@ public class LibraryCardController {
 		return librarycardRepository.findAll();
 		
 	}
+	/**
+	 * 读取卡的信息
+	 * 权限：管理员
+	 * @param session
+	 * @param page
+	 * @param size
+	 * @return
+	 */
 	@GetMapping(value="/admin/action/librarycard/findpage/{page}/{size}")
-	public Page<LIBRARY_CARD> Cardfindpage(HttpSession session,@PathVariable Integer page,@PathVariable Integer size) {
+	public Page<vwCardAndType> Cardfindpage(HttpSession session,@PathVariable Integer page,@PathVariable Integer size) {
 		if(session.getAttribute("user")==null)
 		{
 			return  null;
 		}
-		Sort sort=new Sort(Direction.DESC,"TNO");//坑5,不报错，要记得排序字段
+		Sort sort=new Sort(Direction.DESC,"CNO");//坑5,不报错，要记得排序字段
 		Pageable pageable=new PageRequest(page,size,sort);
-		return librarycardRepository.findAll(pageable);
-		
+		return librarycardRepository.Vwfindall(pageable);
 	}
 	/**
 	 * 找一个卡类型
+	 * 权限：管理员
+	 * 没用到
 	 * @param session
 	 * @param id
 	 * @return
@@ -90,11 +105,38 @@ public class LibraryCardController {
 		return librarycardRepository.findOne(id);
 		
 	}
+	/**
+	 * 查找账号
+	 * 权限：管理员
+	 * @param session
+	 * @param rolename
+	 * @return
+	 */
+	@GetMapping(value="/admin/action/librarycard/search/{rolename}")
+	public List<LIBRARY_CARD> Cardsearch(HttpSession session,@PathVariable("rolename") String rolename) {
+		if(session.getAttribute("user")==null)
+		{
+			return  null;
+		}
+		return librarycardRepository.search(rolename);
+		
+	}
+	/**
+	 * 删除
+	 * 权限：超级管理员
+	 * @param session
+	 * @param id
+	 * @return
+	 */
 	@GetMapping(value="/admin/action/librarycard/del/{id}")
 	public Result DelCard(HttpSession session,@PathVariable("id") Integer id) {
 		if(session.getAttribute("user")==null)
 		{
 			return  null;
+		}
+		if(session.getAttribute("power")==null||"1".equals(session.getAttribute("power")))
+		{
+			return null;
 		}
 		librarycardRepository.delete(id);
 		return new Result("0","删除成功");
@@ -102,6 +144,7 @@ public class LibraryCardController {
 	}
 	/**
 	 * 新建类型
+	 * 权限：超级管理员
 	 * @param session
 	 * @param cardtype
 	 * @return
@@ -124,7 +167,7 @@ public class LibraryCardController {
 				response.sendRedirect(request.getContextPath()+"../../Card/index.html");
 			}catch (Exception e) {
 				// TODO: handle exception
-				return "<a href='javascript:history.go(-1);'>tips:参数不正确</a>";
+				return "<a href='javascript:history.go(-1);'>tips:账号"+card.getCAN()+"已经存在了</a>";
 			}
 		//}
 		return  "参数不全";

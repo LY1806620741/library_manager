@@ -63,7 +63,7 @@
 </body>
 </html>
 <script>
-
+	var rolename=gerUrlParam("rolename");//查找
 	var page=gerUrlParam("page");
 	var size=gerUrlParam("size");
 	if (page==null||page<1){
@@ -73,7 +73,16 @@
 		size=10;
 	}
 	page--;//从0开始
-	lookpage(page,size);
+	if (rolename!=null&&rolename!=""){
+		 $.getJSON("../action/cardtype/search/"+rolename,function(result){
+			 $('#list').html("");
+				$.each(result,function(i,data){
+					$('#list').html($('#list').html()+"<tr><td>"+data.id+"</td><td>"+data.can+"</td><td>"+data.cpsw+"</td><td>"+data.cname+"</td><td>"+data.csex+"</td><td>"+data.tname+"</td><td>"+data.cstatus+"</td><td><a href='./edit.html?id="+data.cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
+				});
+			});
+		}else{
+			lookpage(page,size);
+		}
 	
     $(function () {
         

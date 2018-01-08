@@ -34,21 +34,33 @@
 </head>
 <body>
 <form id="" action="../action/librarycard/add" method="post" class="definewidth m20">
-<input type="hidden" id="tid" name="tNO" value="" />
+<input type="hidden" id="CNO" name="CNO" value="" />
 <table class="table table-bordered table-hover ">
     <tr>
-        <td width="10%" class="tableleft">借书卡类型名字</td>
-        <td><input id="tname" type="text" name="tNAME" value=""/></td>
+        <td width="10%" class="tableleft">账号</td>
+        <td><input type="text" id="CAN" required="required" name="CAN"/></td>
+    </tr>
+        <tr>
+        <td class="tableleft">密码</td>
+        <td><input type="text" id="CPSW" required="required" name="CPSW"/></td>
     </tr>
     <tr>
-        <td class="tableleft">最大借阅数(本)</td>
-        <td ><input id="tmax" type="text" name="tMAX" value=""/></td>
-    </tr>  
+        <td class="tableleft">姓名</td>
+        <td><input type="text" id="CNAME" required="required" name="CNAME"/></td>
+    </tr>   
     <tr>
-        <td class="tableleft">最长借阅时间(天)</td>
-        <td >
-           <input id="tlong" type="text" name="tLONG" value=""/>
-        </td>
+        <td class="tableleft">性别</td>
+        <td> <input style="float:left;" type="radio" checked="checked" name="CSEX" id="CSEX_1" value="男"/><label style="float:left;" for="CSEX_1">男</label>
+            <input style="float:left;margin-left:5px;" type="radio" name="CSEX" id="CSEX_0" value="女"/><label style="float:left;" for="CSEX_0">女</label></td>
+    </tr>
+    <tr>
+        <td class="tableleft">借书证类型</td>
+        <td><select id="TNO" name="TNO"></select></td>
+    </tr>
+    <tr>
+        <td class="tableleft">状态</td>
+        <td><input style="float:left;" type="radio" id="CSTATUS_1" name="CSTATUS" checked="checked" value="1"/><label style="float:left;" for="CSTATUS_1">启用</label>
+            <input style="float:left;margin-left:5px;" type="radio" id="CSTATUS_0" name="CSTATUS" value="0"/><label style="float:left;" for="CSTATUS_0">禁用</label></td>
     </tr>
     <tr>
         <td class="tableleft"></td>
@@ -68,11 +80,27 @@
 		 });
 
     });
-    $.getJSON("../action/librarycard/findone/"+id,function(result){
-    	$("#tid").val(result.tno);
-		$("#tname").val(result.tname);
-		$("#tmax").val(result.tmax);
-		$("#tlong").val(result.tlong);
+    $.getJSON("../action/cardtype/findall/",function(result){
+		$.each(result,function(i,data){
+			$("#TNO").html($("#TNO").html()+"<option value='"+data.tno+"'>"+data.tname+"</option>");
+		});
+	});
+    $.getJSON("../action/librarycard/findone/"+id,function(result){//更新数据
+    	$("#CNO").val(result.cno);
+    	$("#CAN").val(result.can);
+		$("#CPSW").val(result.cpsw);
+		$("#CNAME").val(result.cname);
+		if(result.csex=="男"){//男女
+			$("#CSEX_1").attr('checked', 'true');
+		}else{
+			$("#CSEX_0").attr('checked', 'true');
+		}
+		$("#TNO").val(result.tno);
+		if(result.cstatus){//激活
+			$("#CSTATUS_1").attr('checked', 'true');
+		}else{
+			$("#CSTATUS_0").attr('checked', 'true');
+		}
     });
     function gerUrlParam(name){
 		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");

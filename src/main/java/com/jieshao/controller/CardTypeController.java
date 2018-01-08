@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.jieshao.Repository.TypeOfLibraryCardRepository;
+import com.jieshao.data.LIBRARY_CARD;
 import com.jieshao.data.TYPE_OF_LIBRARY_CARD;
 import com.jieshao.json.Result;
 
@@ -37,6 +38,7 @@ public class CardTypeController {
 
 	/**
 	 * 查找全部
+	 * 权限：管理员
 	 * @param session
 	 * @return
 	 */
@@ -50,6 +52,32 @@ public class CardTypeController {
 		return typeoflibrarycardrepository.findAll();
 		
 	}
+	/**
+	 * 查找卡的类型
+	 * 权限：管理员
+	 * @param session
+	 * @param rolename
+	 * @return
+	 */
+	@GetMapping(value="/admin/action/cardtype/search/{rolename}")
+	public List<TYPE_OF_LIBRARY_CARD> CardTypesearch(HttpSession session,HttpServletResponse respone,@PathVariable("rolename") String rolename) {
+		logger.info(rolename);
+		respone.setContentType("charset='utf-8'");
+		if(session.getAttribute("user")==null)
+		{
+			return  null;
+		}
+		return typeoflibrarycardrepository.search(rolename);
+		
+	}
+	/**
+	 * 查看一页页的数据
+	 * 权限：管理员
+	 * @param session
+	 * @param page
+	 * @param size
+	 * @return
+	 */
 	@GetMapping(value="/admin/action/cardtype/findpage/{page}/{size}")
 	public Page<TYPE_OF_LIBRARY_CARD> Cardfindpage(HttpSession session,@PathVariable Integer page,@PathVariable Integer size) {
 		if(session.getAttribute("user")==null)
@@ -63,7 +91,8 @@ public class CardTypeController {
 		
 	}
 	/**
-	 * 找一个卡类型
+	 * 找一个类型id
+	 * 废弃
 	 * @param session
 	 * @param id
 	 * @return
@@ -78,6 +107,13 @@ public class CardTypeController {
 		return typeoflibrarycardrepository.findOne(id);
 		
 	}
+	/**
+	 * 删除一个类型
+	 * 权限：超级管理员
+	 * @param session
+	 * @param id
+	 * @return
+	 */
 	@GetMapping(value="/admin/action/cardtype/del/{id}")
 	public Result DelCard(HttpSession session,@PathVariable("id") Integer id) {
 		if(session.getAttribute("user")==null)
@@ -85,12 +121,17 @@ public class CardTypeController {
 			//logger.info("/admin/action/cardtype post请求 用户未登录");
 			return  null;
 		}
+		if(session.getAttribute("power")==null||"1".equals(session.getAttribute("power")))
+		{
+			return null;
+		}
 		typeoflibrarycardrepository.delete(id);
 		return new Result("0","删除成功");
 		
 	}
 	/**
 	 * 新建类型
+	 * 权限：超级管理员
 	 * @param session
 	 * @param cardtype
 	 * @return

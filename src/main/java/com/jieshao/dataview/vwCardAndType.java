@@ -6,8 +6,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="vm_CardAndType")
-public class vm_CardAndType {
+@Table(name="VW_CARDANDTYPE")
+public class vwCardAndType {
 	@Id
 	private Integer CNO;//借书证ID（自增）
 	private String CAN;//账号account num
