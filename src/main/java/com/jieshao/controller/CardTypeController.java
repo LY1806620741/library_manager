@@ -60,9 +60,7 @@ public class CardTypeController {
 	 * @return
 	 */
 	@GetMapping(value="/admin/action/cardtype/search/{rolename}")
-	public List<TYPE_OF_LIBRARY_CARD> CardTypesearch(HttpSession session,HttpServletResponse respone,@PathVariable("rolename") String rolename) {
-		logger.info(rolename);
-		respone.setContentType("charset='utf-8'");
+	public List<TYPE_OF_LIBRARY_CARD> CardTypesearch(HttpSession session,@PathVariable("rolename") String rolename) {
 		if(session.getAttribute("user")==null)
 		{
 			return  null;

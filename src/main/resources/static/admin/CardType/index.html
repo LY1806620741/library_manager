@@ -77,7 +77,7 @@
 		 $.getJSON("../action/cardtype/search/"+rolename,function(result){
 			 $('#list').html("");
 				$.each(result,function(i,data){
-					$('#list').html($('#list').html()+"<tr><td>"+data.id+"</td><td>"+data.can+"</td><td>"+data.cpsw+"</td><td>"+data.cname+"</td><td>"+data.csex+"</td><td>"+data.tname+"</td><td>"+data.cstatus+"</td><td><a href='./edit.html?id="+data.cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
+					$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.tname+"</td><td>"+data.tmax+"</td><td>"+data.tlong+"</td><td><a href='./edit.html?id="+data.cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
 				});
 			});
 		}else{
@@ -165,9 +165,17 @@
 	}
 	
 	function gerUrlParam(name){
-		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
+		/*var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
 		var r = window.location.search.substr(1).match(reg);
-		if (r!=null) return unescape(r[2]);return null;
+		if (r!=null) return unescape(r[2]);return null;*/ //中文乱码
+			// 获取参数
+		    var url = window.location.search;
+		    // 正则筛选地址栏
+		    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		    // 匹配目标参数
+		    var result = url.substr(1).match(reg);
+		    //返回参数值
+		    return result ? decodeURIComponent(result[2]) : null;
 	}
 	
 </script>
