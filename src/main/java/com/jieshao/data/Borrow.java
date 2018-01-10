@@ -31,28 +31,35 @@ public class Borrow {
 	public void setCno(Integer cno) {
 		this.cno = cno;
 	}
-	public String getBisbn() {
-		return bisbn;
-	}
-	public void setBisbn(String bisbn) {
-		this.bisbn = bisbn;
-	}
 	public Date getBegintime() {
 		return begintime;
 	}
 	public void setBegintime(Date begintime) {
 		this.begintime = begintime;
 	}
-	public Integer getReturnbook() {
-		return returnbook;
-	}
-	public void setReturnbook(Integer returnbook) {
-		this.returnbook = returnbook;
-	}
+
 	private Integer cno;//外键借书证号
-	private String bisbn;//外键图书isbn
+	private Integer bno;//外键图书isbn
 	//@Column(nullable=false,columnDefinition="timestamp default current_timestamp")//插入的时候去的当前时间
 	private Date begintime = new Date();//借书开始时间
-	private Integer returnbook;//是否归还了书0未还1还了
-	
+	private Date returntime;//还书时间
+	private Integer BARREARS=0;//欠费金额
+	public Integer getBno() {
+		return bno;
+	}
+	public void setBno(Integer bno) {
+		this.bno = bno;
+	}
+	public Date getReturntime() {
+		return returntime;
+	}
+	public void setReturntime(Date returntime) {
+		this.returntime = returntime;
+	}
+	public Integer getBARREARS() {
+		return BARREARS;
+	}
+	public void setBARREARS(Integer bARREARS) {
+		BARREARS = bARREARS;
+	}
 }

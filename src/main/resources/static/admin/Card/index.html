@@ -36,7 +36,7 @@
 <form class="form-inline definewidth m20" action="index.html" method="get">  
     借书证：
     <input type="text" name="rolename" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
-    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增类型</button>
+    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增类借书证</button>
 </form>
 <table class="table table-bordered table-hover definewidth m10" >
     <thead>
@@ -48,6 +48,7 @@
         <th>性别</th>
         <th>借书证类型</th>
         <th>状态</th>
+        <th>欠费</th>
         <th style="width:150px;">操作</th>
     </tr>
     </thead><tbody id="list">
@@ -82,7 +83,7 @@
 		 $.getJSON("../action/librarycard/search/"+rolename,function(result){
 			 $('#list').html("");
 				$.each(result,function(i,data){
-					$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.can+"</td><td>"+data.cpsw+"</td><td>"+data.cname+"</td><td>"+data.csex+"</td><td>"+data.tname+"</td><td>"+data.cstatus+"</td><td><a href='./edit.html?id="+data.cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
+					$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.can+"</td><td>"+data.cpsw+"</td><td>"+data.cname+"</td><td>"+data.csex+"</td><td>"+data.tname+"</td><td>"+(data.cstatus?"启用":"禁用")+"</td><td>"+data.carrears+"</td><td><a href='./edit.html?id="+data.cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
 				});
 			});
 		}else{
@@ -119,7 +120,7 @@
 				window.location.href='?page='+1+'&size='+result.totalElements;
 			}*/
 			for (var i=0;i<result.content.length;i++){
-				$('#list').html($('#list').html()+"<tr><td>"+(page*size+i+1)+"</td><td>"+result.content[i].can+"</td><td>"+result.content[i].cpsw+"</td><td>"+result.content[i].cname+"</td><td>"+result.content[i].csex+"</td><td>"+result.content[i].tname+"</td><td>"+result.content[i].cstatus+"</td><td><a href='./edit.html?id="+result.content[i].cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+result.content[i].cno+");' type='submit'>删除</button></td>");
+				$('#list').html($('#list').html()+"<tr><td>"+(page*size+i+1)+"</td><td>"+result.content[i].can+"</td><td>"+result.content[i].cpsw+"</td><td>"+result.content[i].cname+"</td><td>"+result.content[i].csex+"</td><td>"+result.content[i].tname+"</td><td>"+(result.content[i].cstatus?"启用":"禁用")+"</td><td>"+result.content[i].carrears+"</td><td><a href='./edit.html?id="+result.content[i].cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+result.content[i].cno+");' type='submit'>删除</button></td>");
 			}
 			$('#pageinfo').html("本页"+result.numberOfElements+"条记录"+(page+1)+"/"+result.totalPages+"页总共"+result.totalElements+"条记录<a class='btn "+(result.first?"disabled'":"'")+(result.first?"":" href='?page="+page+"&size="+size+"'")+">上一页</a><a class='btn "+(result.last?"disabled'":"'")+(result.last?"":" href='?page="+(page+2)+"&size="+size+"'")+">下一页</a>");
 			pagelist(page,result.totalPages);

@@ -2,7 +2,6 @@ package com.jieshao.dataview;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
@@ -16,6 +15,13 @@ public class vwCardAndType {
 	private String CSEX;//借书证者的性别
 	private String TNAME;//借书证类型名
 	private Integer CSTATUS;//借书证状态，0禁用，1开启
+	private Integer CARREARS;//借书证欠费金额
+	public Integer getCARREARS() {
+		return CARREARS;
+	}
+	public void setCARREARS(Integer cARREARS) {
+		CARREARS = cARREARS;
+	}
 	public Integer getCNO() {
 		return CNO;
 	}

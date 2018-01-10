@@ -50,5 +50,12 @@ public class TYPE_OF_LIBRARY_CARD {
 		private String TNAME;//借书证类型名
 		private Integer TMAX;//最大借阅数，单位本
 		private Integer TLONG;//最长借阅时间，单位天
+		private Integer TMAXARREARS;//最大欠费（元）
+		public Integer getTMAXARREARS() {
+			return TMAXARREARS;
+		}
+		public void setTMAXARREARS(Integer tMAXARREARS) {
+			TMAXARREARS = tMAXARREARS;
+		}
 		
 }

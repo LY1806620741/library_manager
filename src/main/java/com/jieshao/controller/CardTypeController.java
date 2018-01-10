@@ -1,7 +1,6 @@
 package com.jieshao.controller;
 
 import java.io.IOException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,13 +18,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.jieshao.Repository.TypeOfLibraryCardRepository;
-import com.jieshao.data.LIBRARY_CARD;
 import com.jieshao.data.TYPE_OF_LIBRARY_CARD;
 import com.jieshao.json.Result;
 
@@ -90,7 +86,7 @@ public class CardTypeController {
 	}
 	/**
 	 * 找一个类型id
-	 * 废弃
+	 * 权限：管理员
 	 * @param session
 	 * @param id
 	 * @return
@@ -119,7 +115,7 @@ public class CardTypeController {
 			//logger.info("/admin/action/cardtype post请求 用户未登录");
 			return  null;
 		}
-		if(session.getAttribute("power")==null||"1".equals(session.getAttribute("power")))
+		if(session.getAttribute("power")==null||!session.getAttribute("power").toString().equals("1"))
 		{
 			return null;
 		}
@@ -142,12 +138,16 @@ public class CardTypeController {
 			//logger.info("/admin/action/cardtype post请求 用户未登录");
 			return  null;
 		}
-		if(session.getAttribute("power")==null||"1".equals(session.getAttribute("power")))
+		if(session.getAttribute("power")==null||!session.getAttribute("power").toString().equals("1"))
 		{
-			return "没有权限";
+			return "<a href='javascript:history.go(-1);'>没有权限</a>";
 		}
-		if (cardtype.getTNAME()!=null&&cardtype.getTMAX()!=null&&cardtype.getTLONG()!=null)
+		if (cardtype.getTNAME()!=null&&cardtype.getTMAX()!=null&&cardtype.getTLONG()!=null&&cardtype.getTMAXARREARS()!=null)
 		{
+			//约束
+			if (cardtype.getTMAX()<0||cardtype.getTLONG()<0||cardtype.getTMAXARREARS()<0) {//0本允许，就是不能借
+				return "<a href='javascript:history.go(-1);'>tips:不能用负数哦，点击这里返回</a>";
+			}
 			try {
 				typeoflibrarycardrepository.save(cardtype);
 				response.sendRedirect(request.getContextPath()+"../../CardType/index.html");

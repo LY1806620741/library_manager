@@ -45,7 +45,7 @@
 		  });
   }
     BUI.use('common/main',function(){
-      var config = [{id:'1',menu:[{text:'系统管理',items:[{id:'12',text:'借书证类型',href:'CardType/index.html'},{id:'3',text:'借书证管理',href:'Card/index.html'},{id:'4',text:'书籍管理',href:'User/index.html'},{id:'6',text:'图书室管理',href:'Menu/index.html'}]}]},{id:'7',homePage : '9',menu:[{text:'业务管理',items:[{id:'9',text:'查询业务',href:'Node/index.html'}]}]}];
+      var config = [{id:'1',menu:[{text:'系统管理',items:[{id:'12',text:'借书证类型',href:'CardType/index.html'},{id:'3',text:'借书证管理',href:'Card/index.html'},{id:'4',text:'书籍管理',href:'Book/index.html'},{id:'6',text:'图书室管理',href:'Room/index.html'}]}]},{id:'7',homePage : '9',menu:[{text:'业务管理',items:[{id:'9',text:'管理员管理',href:'User/index.html'},{id:'10',text:'借还记录',href:'Borrow/index.html'}]}]}];
       new PageUtil.MainPage({
         modulesConfig : config
       });

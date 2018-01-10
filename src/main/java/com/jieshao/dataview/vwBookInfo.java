@@ -1,29 +1,18 @@
-package com.jieshao.data;
+package com.jieshao.dataview;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-/**
- * 图书信息表
- * @author CrazyHobo俊杰
- *
- */
-public class Books {
-
-	public Books() {
-	}
-	@Id
-	@GeneratedValue
-	private Integer bno;//id
+@Table(name="VW_BOOKINFO")
+public class vwBookInfo {
 	public Integer getBno() {
 		return bno;
 	}
 	public void setBno(Integer bno) {
 		this.bno = bno;
 	}
-	private String bisbn;//图书isbn
 	public String getBisbn() {
 		return bisbn;
 	}
@@ -66,18 +55,33 @@ public class Books {
 	public void setBinventory(Integer binventory) {
 		this.binventory = binventory;
 	}
-	public Integer getLno() {
-		return lno;
-	}
-	public void setLno(Integer lno) {
-		this.lno = lno;
-	}
 	public String getBimg() {
 		return bimg;
 	}
 	public void setBimg(String bimg) {
 		this.bimg = bimg;
 	}
+	public Integer getLno() {
+		return lno;
+	}
+	public void setLno(Integer lno) {
+		this.lno = lno;
+	}
+	public String getLposition() {
+		return lposition;
+	}
+	public void setLposition(String lposition) {
+		this.lposition = lposition;
+	}
+	public String getLname() {
+		return lname;
+	}
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
+	@Id
+	private Integer bno;//id
+	private String bisbn;//图书isbn
 	private String bname;//图书名字
 	private String bauthor;//图书作者
 	private String bpress;//出版社
@@ -85,6 +89,7 @@ public class Books {
 	private Integer bcopy;//副本量
 	private Integer binventory;//库存量
 	private String bimg;//图书图片
-	private Integer lno;//外键，图书室id
-
+	private Integer lno;//图书室id
+	private String lname;//图书室名字
+	private String lposition;//图书室位置
 }

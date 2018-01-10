@@ -13,7 +13,7 @@
 		<div class="container">
 			<h1 id="tips">欢迎使用</h1>
 			
-			<form class="form">
+			<form class="form" onsubmit="return false">
 				<input id="username" type="text" placeholder="图书卡号"/>
 				<input id="password" type="password" placeholder="密码"/>
 				<button type="submit" id="login-button">登陆</button>
@@ -45,12 +45,21 @@ $('#login-button').click(function (event) {
 			$.ajax({
 				url:"",
 				type:"POST",
+				datetype:"json",
 				data:{
 					username:$('#username').val(),
 					password:$('#password').val(),
 				},
-				success:function(){
-					$('#tips').html("欢迎登陆");
+				success:function(r){
+					if(r.errno==0){
+						$('#tips').html("欢迎登陆");
+						location=document.referrer;//返回并刷新
+						//history.go(-1);
+						//location.reload();
+					}else{
+						$('#tips').html(r.msg);
+					}
+					
 				}
 			});
 	//$('form').fadeOut(500);

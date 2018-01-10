@@ -62,7 +62,6 @@ public class LIBRARY_CARD {
 	}
 	private String CNAME;//借书证拥有者名字
 	public LIBRARY_CARD(String cAN, String cNAME, String cSEX, Integer tNO, Integer cSTATUS, String cPSW) {
-		super();
 		CAN = cAN;
 		CNAME = cNAME;
 		CSEX = cSEX;
@@ -74,5 +73,12 @@ public class LIBRARY_CARD {
 	private Integer TNO;//借书证的类型，外键
 	private Integer CSTATUS;//借书证状态，0禁用，1开启
 	private String CPSW;//借书证密码
+	private Integer CARREARS=0;//欠费金额
+	public Integer getCARREARS() {
+		return CARREARS;
+	}
+	public void setCARREARS(Integer cARREARS) {
+		CARREARS = cARREARS;
+	}
 	
 }

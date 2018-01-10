@@ -1,5 +1,6 @@
 package com.jieshao.data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -43,6 +44,7 @@ public class Library {
 		this.mno = mno;
 	}
 	private String lname;//图书室名字
+	@Column(unique=true)//唯一约束
 	private String lposition;//图书室位置
 	private String limg;//图书室图片地址
 	private Integer mno;//图书室的管理员，可以为空

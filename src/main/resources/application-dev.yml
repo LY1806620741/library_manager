@@ -1,5 +1,5 @@
 spring:
   thymeleaf:
     cache: false #取消页面缓存
-#  jpa:
-#    show-sql: true #hibernate显示sql语句
+  jpa:
+    show-sql: true #hibernate显示sql语句

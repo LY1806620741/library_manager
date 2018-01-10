@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <script type="text/javascript" src="../Js/jquery-2.2.3.min.js"></script>
+    <!-- <script type="text/javascript" src="../Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../Js/bootstrap.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+		.btn{
+		padding:6px 5px;
+		}
+
+    </style>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="index.html" method="get">  
+<span style="font-size:30px;font-weight:600;margin:0 211px;" >我的借阅历史</span><div id="Card" style="position:absolute;right:5px;color:blue;top:0px;font-size:24px;"></div>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+    	<th>序号</th>
+    	<th>书名</th>
+    	<th>借书时间</th>
+        <th>还书时间</th>
+        <th>逾期扣费</th>
+        <th>操作</th>
+    </tr>
+    </thead><tbody id="list">
+	     </tbody></table>
+<div class="inline pull-right page" id="pageinfo">
+        </div>
+</body>
+</html>
+<script>
+$.getJSON("../action/borrow/havepower",function(result){
+	if (result.errno==0){
+		$("#Card").html("欢迎,"+result.msg+"<a href='./index.html' class='btn'>借阅</a><a href='./info.html' class='btn'>我的信息</a><a href='./history.html' class='btn'>我的借阅历史</a><a class='btn' href='../loginout'>退出</a>");
+	}else{
+		$("#Card").html("游客你好"+"<a href='../login' class='btn'>登陆</a>"+"<a href='../' class='btn'>返回主页</a>");
+	}
+});
+$.getJSON("../action/borrow/history",function(result){
+	$.each(result,function(i,data){
+		$("#list").html($("#list").html()+"<tr><td>"+(i+1)+"</td><td id='bname"+data.id+"'>"+data.bname+"</td><td>"+getLocalTime(data.begintime/1000)+"</td><td>"+(data.returntime?getLocalTime(data.returntime/1000):"未还")+"</td><td>"+data.barrears+"</td><td>"+(data.returntime?"已还":"<a onclick='returnbook("+data.id+");' class='btn btn-success' type='submit'>还书</a>")+"</td></tr>");
+	});
+});
+function getLocalTime(nS) {     
+    return new Date(parseInt(nS) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");      
+ }
+function   formatDate(now)   {     
+    var   year=now.getYear();     
+    var   month=now.getMonth()+1;     
+    var   date=now.getDate();     
+    var   hour=now.getHours();     
+    var   minute=now.getMinutes();     
+    var   second=now.getSeconds();     
+    return   (year+1900)+"-"+month+"-"+date+"   "+hour+":"+minute+":"+second;     
+    }
+function returnbook(id)
+{
+	if(confirm("确定要还"+$("#bname"+id).html()+"吗？"))
+	{
+		var url = "index.html";
+		$.get("../action/borrow/return/"+id,function(result){
+				alert(result.msg);
+				if(result.errno==0){
+				location.reload();
+				}
+		});
+	}
+}
+</script>

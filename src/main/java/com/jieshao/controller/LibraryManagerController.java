@@ -1,24 +1,22 @@
 package com.jieshao.controller;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jieshao.Repository.BooksRepository;
 import com.jieshao.Repository.LibraryCardRepository;
 import com.jieshao.Repository.ManageRepository;
 import com.jieshao.Repository.SysteminfoRepository;
-import com.jieshao.data.LIBRARY_CARD;
 import com.jieshao.data.Systeminfo;
-import com.jieshao.json.Msg;
 
 @Controller
 public class LibraryManagerController {
@@ -45,7 +43,7 @@ public class LibraryManagerController {
 	 * @return
 	 */
 	@RequestMapping(value= {"/index","/"},method=RequestMethod.GET)
-	public String Index(HttpServletRequest request) {
+	public String Index(HttpServletRequest request,HttpSession session) {
 		if (!systeminforepository.exists(0))//如果没有系统设置，新建设置
 		{
 			Systeminfo systeminfo = new Systeminfo();
@@ -60,7 +58,16 @@ public class LibraryManagerController {
 		Systeminfo getsysteminfo=systeminforepository.getOne(0);//取得系统配置
 		//检查是不是新的一天
 		Date now=new Date();
-		if (getsysteminfo.getDay().getDay()<now.getDay()&&getsysteminfo.getDay().getMonth()<now.getMonth()&&getsysteminfo.getDay().getYear()<now.getYear())
+		//获得记录时间后一天的时间
+        Calendar calendar= new GregorianCalendar();
+        calendar.setTime(getsysteminfo.getDay());//设置为记录点的时间
+        calendar.add(Calendar.DATE,1);//后一天
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date date=calendar.getTime();//取得时间
+		if (date.getTime()<now.getTime())
 		{
 			getsysteminfo.setAllview(getsysteminfo.getDayview()+getsysteminfo.getAllview());//加到全部阅览量
 			getsysteminfo.setDayview(0);//重置为0
@@ -77,6 +84,12 @@ public class LibraryManagerController {
 		request.setAttribute("booknum", booksrepository.count());
 		request.setAttribute("managernum", managerepository.count());
 		request.setAttribute("dayview", getsysteminfo.getDayview());
+		if(session.getAttribute("card")!=null)
+		{
+			request.setAttribute("card", session.getAttribute("card"));
+		}else {
+			request.setAttribute("card", "游客");
+		}
 		return "index";
 	}
 }

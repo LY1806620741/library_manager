@@ -35,29 +35,37 @@
     </style>
 </head>
 <body>
-<form action="../action/manage/add" method="post" class="definewidth m20">
-<input type="hidden" id="mno" name="mno" value="" />
+<form action="{:U('User/edit')}" method="post" class="definewidth m20">
+<input type="hidden" name="id" value="{$user.id}" />
     <table class="table table-bordered table-hover definewidth m10">
         <tr>
-            <td width="10%" class="tableleft">管理员账号</td>
-            <td><input id="mname" type="text" name="mname"/></td>
+            <td width="10%" class="tableleft">登录名</td>
+            <td><input type="text" name="username" value="{$user.username}"/></td>
         </tr>
         <tr>
-            <td class="tableleft">管理员姓名</td>
-            <td><input id="mrealname" type="text" name="mrealname" value=""/></td>
+            <td class="tableleft">密码</td>
+            <td><input type="password" name="password"/></td>
         </tr>
         <tr>
-            <td class="tableleft">管理员权限</td>
-            <td><select id="mpower" name="mpower">
-            <option value="0">图书室管理员</option>
-            <option value="1">超级管理员</option>
-            </select></td>
+            <td class="tableleft">真实姓名</td>
+            <td><input type="text" name="realname" value="{$user.realname}"/></td>
         </tr>
         <tr>
-            <td class="tableleft">密码(可选)</td>
+            <td class="tableleft">邮箱</td>
+            <td><input type="text" name="email" value="{$user.email}"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">状态</td>
             <td>
-                <input id="mpsw" type="text" name="mpsw" value=""/>
+                <input type="radio" name="status" value="0"
+                    <eq name="user.status" value='0'>checked</eq> /> 启用
+              <input type="radio" name="status" value="1"
+                    <eq name="user.status" value='1'>checked</eq> /> 禁用
             </td>
+        </tr>
+        <tr>
+            <td class="tableleft">角色</td>
+            <td>{$role_checkbox}</td>
         </tr>
         <tr>
             <td class="tableleft"></td>
@@ -76,23 +84,4 @@
 		 });
 
     });
-    id=gerUrlParam("id");
-    $(function () {       
-		$('#backid').click(function(){
-				window.location.href="index.html";
-		 });
-
-    });
-    $.getJSON("../action/manage/findone/"+id,function(result){//更新数据
-    	$("#mno").val(result.mno);
-    	$("#mname").val(result.mname);
-		$("#mrealname").val(result.mrealname);
-		$("#mpower").val(result.mpower);
-		$("#mpsw").val();
-    });
-    function gerUrlParam(name){
-		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
-		var r = window.location.search.substr(1).match(reg);
-		if (r!=null) return unescape(r[2]);return null;
-	}
 </script>

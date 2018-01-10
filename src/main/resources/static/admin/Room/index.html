@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
     <link rel="stylesheet" type="text/css" href="../Css/style.css" />
     <script type="text/javascript" src="../Js/jquery.js"></script>
-    <!-- <script type="text/javascript" src="../Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
     <script type="text/javascript" src="../Js/bootstrap.js"></script>
     <script type="text/javascript" src="../Js/ckform.js"></script>
     <script type="text/javascript" src="../Js/common.js"></script>
@@ -33,38 +33,27 @@
     </style>
 </head>
 <body>
-<form class="form-inline definewidth m20" action="index.html" method="get">  
-    借书证类型：
-    <input type="text" name="rolename" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
-    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增类型</button>
+<form class="form-inline definewidth m20" action="index.html" method="get">
+    图书室名称：
+    <input type="text" name="rolename" id="rolename" class="abc input-default" placeholder="" value="">&nbsp;&nbsp; 
+    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增图书室</button>
 </form>
-<table class="table table-bordered table-hover definewidth m10" >
+<table class="table table-bordered table-hover definewidth m10">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>借书卡类型名字</th>
-        <th>最大借阅数(本)</th>
-        <th>最长借阅时间(天)</th>
-        <th>欠费极限金额(元)</th>
-        <th style="width:150px;">操作</th>
+        <th>序号</th>
+        <th>图书室名字</th>
+        <th>图书室位置</th>
+        <th>图书室的管理员</th>
+        <th>管理操作</th>
     </tr>
-    </thead><tbody id="list">
-	     <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-                  <a href="edit.html"></a>
-                  
-            </td>
-            <td></td>
-        </tr></tbody></table>
+    </thead>
+      <tbody id="list"></tbody></table>
 <div class="inline pull-right page" id="pageinfo">
-        </div>
 </body>
 </html>
 <script>
-	var rolename=gerUrlParam("rolename");//查找
+    var rolename=gerUrlParam("rolename");//查找
 	var page=gerUrlParam("page");
 	var size=gerUrlParam("size");
 	if (page==null||page<1){
@@ -75,10 +64,10 @@
 	}
 	page--;//从0开始
 	if (rolename!=null&&rolename!=""){
-		 $.getJSON("../action/cardtype/search/"+rolename,function(result){
+		 $.getJSON("../action/room/search/"+rolename,function(result){
 			 $('#list').html("");
 				$.each(result,function(i,data){
-					$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.tname+"</td><td>"+data.tmax+"</td><td>"+data.tlong+"</td><td>"+data.tmaxarrears+"</td><td><a href='./edit.html?id="+data.tno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
+					$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.lname+"</td><td>"+data.lposition+"</td><td>"+(data.mrealname!=null?data.mrealname:"暂时没有")+"</td><td><a href='./edit.html?id="+data.lno+"'>修改</a><a style='margin-left:5px;' onclick='del("+data.lno+");'>删除</a></td>");
 				});
 			});
 		}else{
@@ -100,14 +89,14 @@
 		if(confirm("确定要删除吗？"))
 		{
 			var url = "index.html";
-			$.get("../action/cardtype/del/"+id,function(result){
+			$.get("../action/room/del/"+id,function(result){
 				window.location.href=url;
 			});
 		}
 	}
 	
 	function lookpage(page,size){
-		$.getJSON("../action/cardtype/findpage/"+page+"/"+size,function(result){
+		$.getJSON("../action/room/findpage/"+page+"/"+size,function(result){
 			$('#list').html("");
 			if(page>result.totalPages){
 				window.location.href='?page='+1+'&size='+size;
@@ -116,7 +105,7 @@
 				window.location.href='?page='+1+'&size='+result.totalElements;
 			}*/
 			for (var i=0;i<result.content.length;i++){
-				$('#list').html($('#list').html()+"<tr><td>"+result.content[i].tno+"</td><td>"+result.content[i].tname+"</td><td>"+result.content[i].tmax+"</td><td>"+result.content[i].tlong+"</td><td>"+result.content[i].tmaxarrears+"</td><td><a href='./edit.html?id="+result.content[i].tno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+result.content[i].tno+");' type='submit'>删除</button></td>");
+				$('#list').html($('#list').html()+"<tr><td>"+(page*size+i+1)+"</td><td>"+result.content[i].lname+"</td><td>"+result.content[i].lposition+"</td><td>"+(result.content[i].mrealname!=null?result.content[i].mrealname:"暂时没有")+"</td><td><a href='./edit.html?id="+result.content[i].lno+"'>修改</a><a style='margin-left:5px;' onclick='del("+result.content[i].lno+");'>删除</a></td>");
 			}
 			$('#pageinfo').html("本页"+result.numberOfElements+"条记录"+(page+1)+"/"+result.totalPages+"页总共"+result.totalElements+"条记录<a class='btn "+(result.first?"disabled'":"'")+(result.first?"":" href='?page="+page+"&size="+size+"'")+">上一页</a><a class='btn "+(result.last?"disabled'":"'")+(result.last?"":" href='?page="+(page+2)+"&size="+size+"'")+">下一页</a>");
 			pagelist(page,result.totalPages);
@@ -178,5 +167,6 @@
 		    //返回参数值
 		    return result ? decodeURIComponent(result[2]) : null;
 	}
+    
 	
 </script>

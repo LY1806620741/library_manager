@@ -37,58 +37,149 @@
 <body>
 <form class="form-inline definewidth m20" action="index.html" method="get">    
     用户名称：
-    <input type="text" name="username" id="username"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
+    <input type="text" name="rolename" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
     <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增用户</button>
 </form>
 <table class="table table-bordered table-hover definewidth m10">
     <thead>
     <tr>
-        <th>用户id</th>
-        <th>用户名称</th>
-        <th>真实姓名</th>
-        <th>最后登录时间</th>
+        <th>管理员序号</th>
+        <th>管理员账号</th>
+        <th>管理员姓名</th>
+        <th>管理员权限</th>
+        <th>添加管理员的时间</th>
+        <th>最近登陆的时间</th>
         <th>操作</th>
     </tr>
     </thead>
-	     <tr>
-            <td>2</td>
-            <td>admin</td>
-            <td>管理员</td>
-            <td></td>
-            <td>
-                <a href="edit.html">编辑</a>                
-            </td>
-        </tr>	
+	     <tbody id="list">
+	     </tbody>
 </table>
 </body>
 </html>
 <script>
-    $(function () {
-        
-
-		$('#addnew').click(function(){
-
-				window.location.href="add.html";
-		 });
-
-
-    });
-
-	function del(id)
-	{
-		
-		
-		if(confirm("确定要删除吗？"))
-		{
-		
-			var url = "index.html";
-			
-			window.location.href=url;		
-		
-		}
-	
-	
-	
-	
+var rolename=gerUrlParam("rolename");//查找
+var page=gerUrlParam("page");
+var size=gerUrlParam("size");
+if (page==null||page<1){
+	page=1;
+}
+if (size==null||size<1){
+	size=10;
+}
+page--;//从0开始
+if (rolename!=null&&rolename!=""){
+	 $.getJSON("../action/manage/search/"+rolename,function(result){
+		 $('#list').html("");
+			$.each(result,function(i,data){
+				$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.mname+"</td><td>"+data.mrealname+"</td><td>"+data.mpower+"</td><td>"+timeStamp2String(data.createtime)+"</td><td>"+timeStamp2String(data.logintime)+"</td><td><a href='./edit.html?id="+data.mno+"' >修改</a><a style='margin-left:5px;' onclick='del("+data.mno+");' type='submit'>删除</a></td>");
+			});
+		});
+	}else{
+		lookpage(page,size);
 	}
+
+$(function () {
+    
+	$('#addnew').click(function(){
+
+			window.location.href="add.html";
+	 });
+
+
+});
+
+function del(id)
+{
+	if(confirm("确定要删除吗？"))
+	{
+		var url = "index.html";
+		$.get("../action/manage/del/"+id,function(result){
+			window.location.href=url;
+		});
+	}
+}
+
+function timeStamp2String (time){//时间转换
+	if (time==null){
+		return "未登录";
+	}
+    var datetime = new Date();
+     datetime.setTime(time);
+     var year = datetime.getFullYear();
+     var month = datetime.getMonth() + 1;
+     var date = datetime.getDate();
+     var hour = datetime.getHours();
+     var minute = datetime.getMinutes();
+     var second = datetime.getSeconds();
+     var mseconds = datetime.getMilliseconds();
+     return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second+"."+mseconds;
+};
+
+function lookpage(page,size){
+	$.getJSON("../action/manage/findpage/"+page+"/"+size,function(result){
+		$('#list').html("");
+		if(page>result.totalPages){
+			window.location.href='?page='+1+'&size='+size;
+		}
+		for (var i=0;i<result.content.length;i++){
+			$('#list').html($('#list').html()+"<tr><td>"+(page*size+i+1)+"</td><td>"+result.content[i].mname+"</td><td>"+result.content[i].mrealname+"</td><td>"+result.content[i].mpower+"</td><td>"+timeStamp2String(result.content[i].createtime)+"</td><td>"+timeStamp2String(result.content[i].logintime)+"</td><td><a href='./edit.html?id="+result.content[i].mno+"' >修改</a><a style='margin-left:5px;' onclick='del("+result.content[i].mno+");' type='submit'>删除</a></td>");
+		}
+		$('#pageinfo').html("本页"+result.numberOfElements+"条记录"+(page+1)+"/"+result.totalPages+"页总共"+result.totalElements+"条记录<a class='btn "+(result.first?"disabled'":"'")+(result.first?"":" href='?page="+page+"&size="+size+"'")+">上一页</a><a class='btn "+(result.last?"disabled'":"'")+(result.last?"":" href='?page="+(page+2)+"&size="+size+"'")+">下一页</a>");
+		pagelist(page,result.totalPages);
+		$('#pageinfo').html($('#pageinfo').html()+"<a "+(result.last?"":"href='?page="+result.totalPages+"&size="+size+"'")+" class='btn "+(result.last?"disabled":"")+"'>最后一页</a>");
+	});
+	
+}
+
+function pagelist(page,totalPages){//page0开始
+	if (totalPages<5){
+		for (i=0;i<totalPages;i++){
+			if (i==page){
+				$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+			}else{
+				$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+			}
+		}
+	}else{
+		if (page<5){//最前5页
+			for (i=0;i<5;i++){
+				if (i==page){
+					$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+				}else{
+					$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+				}
+			}
+		}else if (page>totalPages-4){//最后5页
+			for (i=totalPages-5;i<totalPages;i++){
+				if (i==page){
+					$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+				}else{
+					$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+				}
+			}
+		}else{
+			for (i=page-2;i<page+3;i++){
+				if (i==page){
+					$('#pageinfo').html($('#pageinfo').html()+"<span class='current'>"+(page+1)+"</span>");
+				}else{
+					$('#pageinfo').html($('#pageinfo').html()+"<a href='?page="+(i+1)+"&size="+size+"'>"+(i+1)+"</a>");
+				}
+			}
+			
+		}
+	}
+
+}
+
+function gerUrlParam(name){
+		// 获取参数
+	    var url = window.location.search;
+	    // 正则筛选地址栏
+	    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	    // 匹配目标参数
+	    var result = url.substr(1).match(reg);
+	    //返回参数值
+	    return result ? decodeURIComponent(result[2]) : null;
+}
 </script>

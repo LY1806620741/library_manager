@@ -31,22 +31,50 @@
 
     </style>
 </head>
-<form action="index.html" method="post">
+<form action="../action/book/add" method="post">
 <table class="table table-bordered table-hover definewidth m10">
     <tr>
-        <td width="10%" class="tableleft">机构号</td>
-        <td><input type="text" name="grouptitle"/></td>
+        <td width="10%" class="tableleft">索书号(必填)</td>
+        <td><input type="text" required="required" name="bisbn"/></td>
     </tr>
     <tr>
-        <td class="tableleft">机构名称</td>
-        <td><input type="text" name="moduletitle"/></td>
+        <td class="tableleft">图片(可选)</td>
+        <td> 
+        
+        <input type="text"  name="bimg"/>
+    </tr>
+    <tr>
+        <td class="tableleft">书名(必填)</td>
+        <td><input type="text" required="required" name="bname"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">作者(必填)</td>
+        <td><input type="text" required="required" name="bauthor"/></td>
     </tr>   
     <tr>
-        <td class="tableleft">状态</td>
-        <td>
-            <input type="radio" name="status" value="1" checked/> 启用
-            <input type="radio" name="status" value="0"/> 禁用
-        </td>
+        <td class="tableleft">出版社(必填)</td>
+        <td> 
+        <input type="text" required="required" name="bpress"/>
+    </tr>
+    <tr>
+        <td class="tableleft">价格(元)(必填)</td>
+        <td> 
+        <input type="text" required="required" name="bprice"/>
+    </tr>
+    <tr>
+        <td class="tableleft">副本量(必填)</td>
+        <td> 
+        <input type="text" required="required" name="bcopy"/>
+    </tr>
+    <tr>
+        <td class="tableleft">库存量(必填)</td>
+        <td> 
+        <input type="text" required="required" name="binventory"/>
+    </tr>
+    
+    <tr>
+        <td class="tableleft">图书室(选填)</td>
+        <td><select id="lno" name="lno"></select></td>
     </tr>
     <tr>
         <td class="tableleft"></td>
@@ -63,6 +91,11 @@
 		$('#backid').click(function(){
 				window.location.href="index.html";
 		 });
-
     });
+    $.getJSON("../action/room/findall/",function(result){
+    	$("#lno").html("<option value=''>暂不入库</option>");
+			$.each(result,function(i,data){
+				$("#lno").html($("#lno").html()+"<option value='"+data.lno+"'>"+data.lname+"-"+data.lposition+"</option>");
+			});
+		});
 </script>

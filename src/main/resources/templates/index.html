@@ -41,9 +41,9 @@
 						<div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
 							<nav class="link-effect-2" id="link-effect-2">
 								<ul class="nav navbar-nav">
-									<li class="active"><a href="index.html"><span data-hover="主页">Home</span></a></li>
-									<li><a href="#about" class="scroll"><span data-hover="关于">About</span></a></li>
-									<li><a href="#gallery" class="scroll"><span data-hover="Gallery">Gallery</span></a></li>
+									<li class="active"><a href="index.html"><span data-hover="Home">主页</span></a></li>
+									<li><a href="#about" class="scroll"><span data-hover="About">关于</span></a></li>
+									<li><a href="#gallery" class="scroll"><span onclick="look();" data-hover="查看所有书籍">查看书籍</span></a></li>
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle scroll" data-toggle="dropdown"><span data-hover="点击登陆">点击登陆</span> <b class="caret"></b></a>
 										<ul class="dropdown-menu agile_short_dropdown">
@@ -51,7 +51,7 @@
 											<li><a href="./admin">我是管理员</a></li>
 										</ul>
 									</li>
-									<li><a href="#contact" class="scroll"><span data-hover="Contact">Contact</span></a></li>
+									<li><a href="#" id="identity" class="scroll"><span onclick="loginout();" data-hover="注销" th:text="${card}">游客</span></a></li>
 								</ul>
 							</nav>
 						</div>
@@ -62,8 +62,8 @@
 										</ul> <!-- cd-header-buttons -->
 									</div>  
 									<div id="cd-search" class="cd-search agileinfo">
-										<form action="#" method="post">
-											<input name="Search" type="search" placeholder="点击这里并输入文字"/>
+										<form action="./Borrow/index.html" method="get">
+											<input name="rolename" type="search" placeholder="点击这里并输入文字"/>
 										</form>
 									</div> 
 									<!-- //cd-search -->
@@ -256,6 +256,17 @@
 		$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
 			});
 		});
+		function loginout(){//退出
+			$.getJSON("/loginout",function(r){
+				if (r.errno==0){
+					window.location.href='/';
+				}
+			});
+			
+		}
+		function look(){
+			window.location.href='/Borrow/index.html';
+		}
 </script>
 <!-- //end-smooth-scrolling -->	
 	<!-- script for responsive tabs -->						

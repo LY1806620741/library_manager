@@ -34,18 +34,23 @@
 </head>
 <body>
 <form class="form-inline definewidth m20" action="index.html" method="get">  
-    借书证类型：
+    图书：
     <input type="text" name="rolename" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
-    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增类型</button>
+    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="button" class="btn btn-success" id="addnew">新增图书</button>
 </form>
 <table class="table table-bordered table-hover definewidth m10" >
     <thead>
     <tr>
-        <th>ID</th>
-        <th>借书卡类型名字</th>
-        <th>最大借阅数(本)</th>
-        <th>最长借阅时间(天)</th>
-        <th>欠费极限金额(元)</th>
+    	<th>序号</th>
+    	<th>索书号</th>
+        <th>图书名字</th>
+        <th>图书图片</th>
+        <th>图书作者</th>
+        <th>出版社</th>
+        <th>价格</th>
+        <th>副本量</th>
+        <th>库存量</th>
+        <th>图书室</th>
         <th style="width:150px;">操作</th>
     </tr>
     </thead><tbody id="list">
@@ -65,6 +70,7 @@
 </html>
 <script>
 	var rolename=gerUrlParam("rolename");//查找
+	
 	var page=gerUrlParam("page");
 	var size=gerUrlParam("size");
 	if (page==null||page<1){
@@ -74,17 +80,17 @@
 		size=10;
 	}
 	page--;//从0开始
+	
 	if (rolename!=null&&rolename!=""){
-		 $.getJSON("../action/cardtype/search/"+rolename,function(result){
+		 $.getJSON("../action/book/search/"+rolename,function(result){
 			 $('#list').html("");
 				$.each(result,function(i,data){
-					$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.tname+"</td><td>"+data.tmax+"</td><td>"+data.tlong+"</td><td>"+data.tmaxarrears+"</td><td><a href='./edit.html?id="+data.tno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
+					$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.bisbn+"</td><td>"+data.bname+"</td><td>"+(data.bimg?data.bimg:"没有图片对不起这张脸")+"</td><td>"+data.bauthor+"</td><td>"+data.bpress+"</td><td>"+data.bprice+"</td><td>"+data.bcopy+"</td><td>"+data.binventory+"</td><td>"+(data.lno?data.lname+"-"+data.lposition:"暂未入库")+"</td><td><a href='./edit.html?id="+data.bno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.bno+");' type='submit'>删除</button></td>");
 				});
 			});
 		}else{
 			lookpage(page,size);
 		}
-	
     $(function () {
         
 		$('#addnew').click(function(){
@@ -94,20 +100,20 @@
 
 
     });
-
+	//删除函数
 	function del(id)
 	{
 		if(confirm("确定要删除吗？"))
 		{
 			var url = "index.html";
-			$.get("../action/cardtype/del/"+id,function(result){
+			$.get("../action/book/del/"+id,function(result){
 				window.location.href=url;
 			});
 		}
 	}
-	
+	//翻页函数
 	function lookpage(page,size){
-		$.getJSON("../action/cardtype/findpage/"+page+"/"+size,function(result){
+		$.getJSON("../action/book/findpage/"+page+"/"+size,function(result){
 			$('#list').html("");
 			if(page>result.totalPages){
 				window.location.href='?page='+1+'&size='+size;
@@ -116,7 +122,7 @@
 				window.location.href='?page='+1+'&size='+result.totalElements;
 			}*/
 			for (var i=0;i<result.content.length;i++){
-				$('#list').html($('#list').html()+"<tr><td>"+result.content[i].tno+"</td><td>"+result.content[i].tname+"</td><td>"+result.content[i].tmax+"</td><td>"+result.content[i].tlong+"</td><td>"+result.content[i].tmaxarrears+"</td><td><a href='./edit.html?id="+result.content[i].tno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+result.content[i].tno+");' type='submit'>删除</button></td>");
+				$('#list').html($('#list').html()+"<tr><td>"+(page*size+i+1)+"</td><td>"+result.content[i].bisbn+"</td><td>"+result.content[i].bname+"</td><td>"+(result.content[i].bimg?result.content[i].bimg:"没有图片对不起这张脸")+"</td><td>"+result.content[i].bauthor+"</td><td>"+result.content[i].bpress+"</td><td>"+result.content[i].bprice+"</td><td>"+result.content[i].bcopy+"</td><td>"+result.content[i].binventory+"</td><td>"+(result.content[i].lno?result.content[i].lname+"-"+result.content[i].lposition:"暂未入库")+"</td><td><a href='./edit.html?id="+result.content[i].bno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+result.content[i].bno+");' type='submit'>删除</button></td>");
 			}
 			$('#pageinfo').html("本页"+result.numberOfElements+"条记录"+(page+1)+"/"+result.totalPages+"页总共"+result.totalElements+"条记录<a class='btn "+(result.first?"disabled'":"'")+(result.first?"":" href='?page="+page+"&size="+size+"'")+">上一页</a><a class='btn "+(result.last?"disabled'":"'")+(result.last?"":" href='?page="+(page+2)+"&size="+size+"'")+">下一页</a>");
 			pagelist(page,result.totalPages);
@@ -124,7 +130,7 @@
 		});
 		
 	}
-	
+	//显示数字页数杰少
 	function pagelist(page,totalPages){//page0开始
 		if (totalPages<5){
 			for (i=0;i<totalPages;i++){
@@ -166,17 +172,14 @@
 	}
 	
 	function gerUrlParam(name){
-		/*var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
-		var r = window.location.search.substr(1).match(reg);
-		if (r!=null) return unescape(r[2]);return null;*/ //中文乱码
-			// 获取参数
-		    var url = window.location.search;
-		    // 正则筛选地址栏
-		    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-		    // 匹配目标参数
-		    var result = url.substr(1).match(reg);
-		    //返回参数值
-		    return result ? decodeURIComponent(result[2]) : null;
+		
+			    var url = window.location.search;
+			    // 正则筛选地址栏
+			    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			    // 匹配目标参数
+			    var result = url.substr(1).match(reg);
+			    //返回参数值
+			    return result ? decodeURIComponent(result[2]) : null;
 	}
 	
 </script>

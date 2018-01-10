@@ -63,6 +63,10 @@
             <input style="float:left;margin-left:5px;" type="radio" id="CSTATUS_0" name="CSTATUS" value="0"/><label style="float:left;" for="CSTATUS_0">禁用</label></td>
     </tr>
     <tr>
+        <td class="tableleft">欠费</td>
+        <td><input type="text" id="CARREARS" name="carrears"/></td>
+    </tr>
+    <tr>
         <td class="tableleft"></td>
         <td>
             <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
@@ -84,24 +88,25 @@
 		$.each(result,function(i,data){
 			$("#TNO").html($("#TNO").html()+"<option value='"+data.tno+"'>"+data.tname+"</option>");
 		});
+		$.getJSON("../action/librarycard/findone/"+id,function(result){//更新数据
+	    	$("#CNO").val(result.cno);
+	    	$("#CAN").val(result.can);
+			$("#CPSW").val(result.cpsw);
+			$("#CNAME").val(result.cname);
+			if(result.csex=="男"){//男女
+				$("#CSEX_1").attr('checked', 'true');
+			}else{
+				$("#CSEX_0").attr('checked', 'true');
+			}
+			$("#TNO").val(result.tno);
+			if(result.cstatus){//激活
+				$("#CSTATUS_1").attr('checked', 'true');
+			}else{
+				$("#CSTATUS_0").attr('checked', 'true');
+			}
+			$("#CARREARS").val(result.carrears);
+	    });
 	});
-    $.getJSON("../action/librarycard/findone/"+id,function(result){//更新数据
-    	$("#CNO").val(result.cno);
-    	$("#CAN").val(result.can);
-		$("#CPSW").val(result.cpsw);
-		$("#CNAME").val(result.cname);
-		if(result.csex=="男"){//男女
-			$("#CSEX_1").attr('checked', 'true');
-		}else{
-			$("#CSEX_0").attr('checked', 'true');
-		}
-		$("#TNO").val(result.tno);
-		if(result.cstatus){//激活
-			$("#CSTATUS_1").attr('checked', 'true');
-		}else{
-			$("#CSTATUS_0").attr('checked', 'true');
-		}
-    });
     function gerUrlParam(name){
 		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
 		var r = window.location.search.substr(1).match(reg);

@@ -35,35 +35,29 @@
     </style>
 </head>
 <body>
-<form action="index.html" method="post" class="definewidth m20">
+<form action="../action/manage/add" method="post" class="definewidth m20">
 <table class="table table-bordered table-hover definewidth m10">
     <tr>
-        <td width="10%" class="tableleft">登录名</td>
-        <td><input type="text" name="username"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">密码</td>
-        <td><input type="password" name="password"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">真实姓名</td>
-        <td><input type="text" name="realname"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">邮箱</td>
-        <td><input type="text" name="email"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">状态</td>
-        <td>
-            <input type="radio" name="status" value="1" checked/> 启用
-           <input type="radio" name="status" value="0"/> 禁用
-        </td>
-    </tr>
-    <tr>
-        <td class="tableleft">角色</td>
-        <td>{$role_checkbox}</td>
-    </tr>
+            <td width="10%" class="tableleft">管理员账号(必填)</td>
+            <td><input id="mname" type="text" name="mname"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">管理员姓名(必填)</td>
+            <td><input id="mrealname" type="text" name="mrealname" value=""/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">管理员权限(必填)</td>
+            <td><select id="mpower" name="mpower">
+            <option value="0">图书室管理员</option>
+            <option value="1">超级管理员</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td class="tableleft">密码(必填)</td>
+            <td>
+                <input id="mpsw" type="text" name="mpsw" value=""/>
+            </td>
+        </tr>
     <tr>
         <td class="tableleft"></td>
         <td>

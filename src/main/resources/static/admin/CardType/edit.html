@@ -51,6 +51,10 @@
         </td>
     </tr>
     <tr>
+        <td class="tableleft">欠费极限金额(元)</td>
+        <td><input id="tmaxarrears" type="text" name="TMAXARREARS"/></td>
+    </tr>
+    <tr>
         <td class="tableleft"></td>
         <td>
             <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
@@ -73,6 +77,7 @@
 		$("#tname").val(result.tname);
 		$("#tmax").val(result.tmax);
 		$("#tlong").val(result.tlong);
+		$("#tmaxarrears").val(result.tmaxarrears);
     });
     function gerUrlParam(name){
 		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");

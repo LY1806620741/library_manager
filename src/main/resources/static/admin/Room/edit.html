@@ -33,41 +33,22 @@
     </style>
 </head>
 <body>
-<form action="index.html" method="post" class="definewidth m20">
+<form action="../action/room/add" method="post" class="definewidth m20">
+<input type="hidden" id="lno" name="lno" value="" />
 <table class="table table-bordered table-hover m10">
     <tr>
-        <td width="10%" class="tableleft">上级</td>
+        <td width="20%" class="tableleft">图书室名字</td>
         <td>
-            <select name="parentid">
-            <option value="0">一级菜单</option><option value='1'   />&nbsp;系统管理</option><option value='7'   />&nbsp;明信片管理</option>            </select>
+            <input type="text" id="lname" name="lname"/>
         </td>
     </tr>
     <tr>
-        <td class="tableleft">名称</td>
-        <td><input type="text" name="name"/></td>
+        <td class="tableleft">图书室位置</td>
+        <td><input type="text" id="lposition" name="lposition"/></td>
     </tr>
     <tr>
-        <td class="tableleft">Group</td>
-        <td><input type="text" name="group"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">Model</td>
-        <td><input type="text" name="module"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">Action</td>
-        <td><input type="text" name="action"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">备注</td>
-        <td><input type="text" name="remark"/></td>
-    </tr>
-    <tr>
-        <td class="tableleft">状态</td>
-        <td>
-            <input type="radio" name="status" value="0" checked/> 启用
-            <input type="radio" name="status" value="1"/> 禁用
-        </td>
+        <td class="tableleft">管理员(可选)</td>
+        <td><select id="mno" name="mno"/></select></td>
     </tr>
     <tr>
         <td class="tableleft"></td>
@@ -80,10 +61,30 @@
 </body>
 </html>
 <script>
+	id=gerUrlParam("id");
     $(function () {       
 		$('#backid').click(function(){
 				window.location.href="index.html";
 		 });
 
     });
+    
+    $.getJSON("../action/manage/findall/",function(result){
+    	$("#mno").html("<option value=''></option>");
+		$.each(result,function(i,data){
+			$("#mno").html($("#mno").html()+"<option value='"+data.mno+"'>"+data.mrealname+"</option>");
+		});
+		$.getJSON("../action/room/findone/"+id,function(result){//更新数据
+	    	$("#lno").val(result.lno);
+	    	$("#lname").val(result.lname);
+			$("#lposition").val(result.lposition);
+			$("#mno").val(result.mno);
+	    });
+	});
+   
+    function gerUrlParam(name){
+		var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r!=null) return unescape(r[2]);return null;
+	}
 </script>

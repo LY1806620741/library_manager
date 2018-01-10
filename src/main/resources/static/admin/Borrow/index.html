@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <script type="text/javascript" src="../Js/jquery.js"></script>
+    <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="../Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../Js/ckform.js"></script>
+    <script type="text/javascript" src="../Js/common.js"></script>
+
+ 
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="index.html" method="get">    
+    模糊查询：
+    <input type="text" name="username" id="username"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
+    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp;
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+    	<th>序号</th>
+    	<th>借书者</th>
+    	<th>书名</th>
+    	<th>借书时间</th>
+        <th>还书时间</th>
+        <th>逾期扣费</th>
+    </tr>
+    </thead><tbody id="list">
+	     </tbody></table>
+</body>
+</html>
+<script>
+var rolename=gerUrlParam("rolename");//查找
+
+var page=gerUrlParam("page");
+var size=gerUrlParam("size");
+if (page==null||page<1){
+	page=1;
+}
+if (size==null||size<1){
+	size=10;
+}
+page--;//从0开始
+
+if (rolename!=null&&rolename!=""){
+	 $.getJSON("../action/librarycard/search/"+rolename,function(result){
+		 $('#list').html("");
+			$.each(result,function(i,data){
+				$('#list').html($('#list').html()+"<tr><td>"+(i+1)+"</td><td>"+data.can+"</td><td>"+data.cpsw+"</td><td>"+data.cname+"</td><td>"+data.csex+"</td><td>"+data.tname+"</td><td>"+(data.cstatus?"启用":"禁用")+"</td><td>"+data.carrears+"</td><td><a href='./edit.html?id="+data.cno+"' class='btn btn-primary' type='submit'>修改</a><button class='btn btn-danger' style='margin-left:5px;' onclick='del("+data.cno+");' type='submit'>删除</button></td>");
+			});
+		});
+	}else{
+		look();
+	}
+//翻页函数
+function look(){
+	$.getJSON("../action/borrow/findall",function(result){
+		$.each(result,function(i,data){
+			$("#list").html($("#list").html()+"<tr><td>"+(i+1)+"</td><td>"+data.cname+"</td><td>"+data.bname+"</td><td>"+getLocalTime(data.begintime/1000)+"</td><td>"+(data.returntime?getLocalTime(data.returntime/1000):"未还")+"</td><td>"+data.barrears+"</td>");
+		});
+	});
+}
+function getLocalTime(nS) {     
+    return new Date(parseInt(nS) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");      
+ }
+
+function gerUrlParam(name){
+	var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
+	var r = window.location.search.substr(1).match(reg);
+	if (r!=null) return unescape(r[2]);return null;
+}
+</script>
