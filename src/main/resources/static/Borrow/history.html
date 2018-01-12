@@ -42,6 +42,8 @@
     	<th>书名</th>
     	<th>借书时间</th>
         <th>还书时间</th>
+        <th>还书期限</th>
+        <th>剩余</th>
         <th>逾期扣费</th>
         <th>操作</th>
     </tr>
@@ -60,8 +62,13 @@ $.getJSON("../action/borrow/havepower",function(result){
 	}
 });
 $.getJSON("../action/borrow/history",function(result){
+	var tlong;
+	$.ajaxSettings.async = false;//同步
+	$.getJSON("../action/borrow/info/",function(r){
+		tlong=r.tlong;
+	});
 	$.each(result,function(i,data){
-		$("#list").html($("#list").html()+"<tr><td>"+(i+1)+"</td><td id='bname"+data.id+"'>"+data.bname+"</td><td>"+getLocalTime(data.begintime/1000)+"</td><td>"+(data.returntime?getLocalTime(data.returntime/1000):"未还")+"</td><td>"+data.barrears+"</td><td>"+(data.returntime?"已还":"<a onclick='returnbook("+data.id+");' class='btn btn-success' type='submit'>还书</a>")+"</td></tr>");
+		$("#list").html($("#list").html()+"<tr><td>"+(i+1)+"</td><td id='bname"+data.id+"'>"+data.bname+"</td><td>"+getLocalTime(data.begintime/1000)+"</td><td>"+(data.returntime?getLocalTime(data.returntime/1000):"未还")+"</td><td>"+getLocalTime(data.begintime/1000+tlong*3600*24)+"</td><td>"+(data.returntime?"":Math.ceil(tlong-(new Date().getTime()-data.begintime)/1000/3600/24))+"</td><td>"+data.barrears+"</td><td>"+(data.returntime?"已还":"<a onclick='returnbook("+data.id+");' class='btn btn-success' type='submit'>还书</a>")+"</td></tr>");
 	});
 });
 function getLocalTime(nS) {     

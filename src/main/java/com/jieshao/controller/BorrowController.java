@@ -187,12 +187,12 @@ public class BorrowController {
 		//if (borrows.getCno().equals(session.getAttribute("cno").toString())){//如果是这个人的
 			Date now=new Date();//获取时间
 			Cardinfo cardinfo=searchoneinfo(session);
-			List<LIBRARY_CARD> card=librarycardrepository.search(session.getAttribute("cno").toString());
+			LIBRARY_CARD library_card=librarycardrepository.findOne((Integer)session.getAttribute("cno"));
 			int days=differentDaysByMillisecond(borrows.getBegintime(),now);//求相差的天数
 			if(days>cardinfo.getTLONG()) {//超时
 				int fine=days-cardinfo.getTLONG();//罚款数
-				card.get(0).setCARREARS(card.get(0).getCARREARS()+fine);//设置罚款
-				librarycardrepository.save(card.get(0));//完成罚款
+				library_card.setCARREARS(library_card.getCARREARS()+fine);//设置罚款
+				librarycardrepository.save(library_card);//完成罚款
 				borrows.setBARREARS(fine);//记录罚金
 				borrows.setReturntime(now);//还书时间
 				borrowrepository.save(borrows);//保存修改
@@ -222,7 +222,7 @@ public class BorrowController {
 	 * @return
 	 */
 	public int differentDaysByMillisecond(Date date1,Date date2) {
-		int days = (int) (date2.getTime() -date1.getTime()) / (1000*3600*24);
+		int days = (int)((date2.getTime() -date1.getTime()) / (1000*3600*24));
 		return days;
 	}
 	/**

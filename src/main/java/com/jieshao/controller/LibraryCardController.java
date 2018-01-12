@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jieshao.Repository.BorrowRepository;
 import com.jieshao.Repository.LibraryCardRepository;
+import com.jieshao.Repository.TypeOfLibraryCardRepository;
+import com.jieshao.data.Borrow;
 import com.jieshao.data.LIBRARY_CARD;
+import com.jieshao.data.TYPE_OF_LIBRARY_CARD;
 import com.jieshao.dataview.vwCardAndType;
 import com.jieshao.json.Result;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +38,10 @@ public class LibraryCardController {
 	Logger logger = LoggerFactory.getLogger(LibraryCardController.class);
 	@Autowired
 	private LibraryCardRepository librarycardRepository;
+	@Autowired
+	private BorrowRepository borrowrepository;
+	@Autowired
+	private TypeOfLibraryCardRepository typeoflibrarycardrepository;
 	
 	/**
 	 * 用户登陆界面（调用模板）
@@ -75,9 +84,23 @@ public class LibraryCardController {
 			}
 			
 			try{
-				LIBRARY_CARD carduser =librarycardRepository.findByCAN(username);
+				LIBRARY_CARD carduser =librarycardRepository.findByCAN(username);//验证密码
 				if(carduser.getCPSW().equals(password))//密码正确不用加密
 				{
+					//更新用户欠费信息
+					List<Borrow> borrows =  borrowrepository.searchUnreturn(carduser.getCNO());//查找未还记录
+					LIBRARY_CARD library_card=librarycardRepository.findOne(carduser.getCNO());//查询用户信息
+					TYPE_OF_LIBRARY_CARD type_of_library_card = typeoflibrarycardrepository.findOne(library_card.getTNO());//查询类型
+					Integer tlong =type_of_library_card.getTLONG();
+					Date now=new Date();
+					for (Borrow borrow:borrows) {//处理每个未还记录
+						long t=now.getTime()-borrow.getBegintime().getTime();//时间戳的差
+						Integer day=(int)(t/(24*60*60*1000));//相差天数
+						if (day>tlong) {//超过时间
+							borrow.setBARREARS((day-tlong));//记录扣费时间
+							borrowrepository.save(borrow);//保存更改
+						}
+					}
 					session.setAttribute("card",carduser.getCNAME());//设置sessionc
 					session.setAttribute("cno",carduser.getCNO());
 					Result json = new Result("0","密码正确");

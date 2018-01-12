@@ -71,8 +71,9 @@ $.getJSON("../action/borrow/havepower",function(result){
 		$("#Card").html("游客你好"+"<a href='../login' class='btn'>登陆</a>"+"<a href='../' class='btn'>返回主页</a>");
 	}
 });
-$.getJSON("../action/borrow/info/",function(r){
-	$('#list').html("<tr><td>"+r.can+"</td><td>"+r.cname+"</td><td>"+r.csex+"</td><td>"+r.cstatus+"</td><td>"+r.tname+"</td><td>"+r.tmax+"</td><td>"+r.tlong+"</td><td>"+r.carrears+"</td><td>"+r.tmaxarrears+"</td><td>"+r.bnow+"</td></tr>")
-});
+	
+	$.getJSON("../action/borrow/info/",function(r){
+		$('#list').html("<tr><td>"+r.can+"</td><td>"+r.cname+"</td><td>"+r.csex+"</td><td>"+r.cstatus+"</td><td>"+r.tname+"</td><td>"+r.tmax+"</td><td>"+r.tlong+"</td><td>"+r.carrears+"</td><td>"+r.tmaxarrears+"</td><td>"+r.bnow+"</td></tr>");
+	});
 	
 </script>
